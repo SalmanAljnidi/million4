@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>مسابقة القسمة | من سيربح المليون (نسخة تعليمية)</title>
+  <meta name="theme-color" content="#0b1635" />
+  <meta name="description" content="مسابقة تعليمية مستوحاة من برامج المسابقات، للتدريب على قسمة الأعداد (المقسوم عليه ١–١٠) والناتج رقم واحد." />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div class="titles">
+        <div class="t1">مسابقة القسمة</div>
+        <div class="t2">نسخة تعليمية مستوحاة من برامج المسابقات</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button id="btnInstall" class="btn ghost" hidden>تثبيت</button>
+      <button id="btnSound" class="btn ghost" aria-pressed="true" title="تشغيل/كتم الصوت">🔊</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="screenIntro" class="screen active">
+      <div class="stage">
+        <div class="hero">
+          <div class="halo" aria-hidden="true"></div>
+          <h1>هل أنت مستعد للفوز؟</h1>
+          <p class="sub">
+            أسئلة <b>قسمة</b> فقط • المقسوم عليه من <b>١</b> إلى <b>١٠</b> • الناتج <b>رقم واحد</b>
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <label class="lbl" for="playerName">اسم المتسابق</label>
+            <input id="playerName" type="text" inputmode="text" maxlength="18" placeholder="اكتب اسمك هنا" />
+          </div>
+
+          <div class="row">
+            <label class="lbl" for="difficulty">مستوى السرعة</label>
+            <select id="difficulty">
+              <option value="calm">هادئ</option>
+              <option value="normal" selected>متوازن</option>
+              <option value="fast">حماسي</option>
+            </select>
+          </div>
+
+          <div class="row grid2">
+            <button id="btnStart" class="btn primary">ابدأ المسابقة</button>
+            <button id="btnHow" class="btn">طريقة اللعب</button>
+          </div>
+
+          <div class="note">
+            <span class="pill">مهم</span>
+            هذه نسخة تعليمية بواجهة خاصة وأصوات أصلية تم تصميمها للاستخدام التعليمي.
+          </div>
+        </div>
+
+        <div class="ladder-mini" aria-label="سلم الجوائز">
+          <div class="ladder-title">سلم التقدم</div>
+          <ol id="miniLadder"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenGame" class="screen">
+      <div class="game-grid">
+        <aside class="ladder" aria-label="سلم الجوائز">
+          <div class="ladder-head">
+            <div class="who">المتسابق: <b id="whoName">—</b></div>
+            <div class="score">التقدم: <b id="progress">٠</b>/<span id="totalQ">١٥</span></div>
+          </div>
+          <ol id="ladderList"></ol>
+        </aside>
+
+        <section class="panel">
+          <div class="lifelines" role="group" aria-label="وسائل المساعدة">
+            <button id="ll5050" class="ll" title="٥٠:٥٠">٥٠:٥٠</button>
+            <button id="llAudience" class="ll" title="سؤال الجمهور">الجمهور</button>
+            <button id="llPhone" class="ll" title="اتصال بصديق">اتصال</button>
+          </div>
+
+          <div class="question-box">
+            <div class="q-top">
+              <div class="q-tag">السؤال <span id="qNo">١</span></div>
+              <div class="timer">
+                <div class="timer-bar"><div id="timerFill"></div></div>
+                <div class="timer-txt" id="timerTxt">٠٠</div>
+              </div>
+            </div>
+
+            <div id="questionText" class="question">—</div>
+
+            <div class="answers" role="list">
+              <button class="ans" data-idx="0" role="listitem"><span class="k">أ</span><span class="t" id="a0">—</span></button>
+              <button class="ans" data-idx="1" role="listitem"><span class="k">ب</span><span class="t" id="a1">—</span></button>
+              <button class="ans" data-idx="2" role="listitem"><span class="k">ج</span><span class="t" id="a2">—</span></button>
+              <button class="ans" data-idx="3" role="listitem"><span class="k">د</span><span class="t" id="a3">—</span></button>
+            </div>
+
+            <div class="controls">
+              <button id="btnWalk" class="btn danger">انسحاب</button>
+              <button id="btnNext" class="btn primary" disabled>التالي</button>
+            </div>
+          </div>
+
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="screenEnd" class="screen">
+      <div class="end-card">
+        <div class="badge" aria-hidden="true">★</div>
+        <h2 id="endTitle">انتهت المسابقة</h2>
+        <p id="endMsg">—</p>
+        <div class="end-actions">
+          <button id="btnRestart" class="btn primary">العب مرة أخرى</button>
+          <button id="btnHome" class="btn">العودة للبداية</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modals -->
+  <dialog id="dlgHow" class="dlg">
+    <form method="dialog">
+      <h3>طريقة اللعب</h3>
+      <ul>
+        <li>اختر الإجابة الصحيحة لأربعة خيارات.</li>
+        <li>وسائل المساعدة تُستخدم مرة واحدة: <b>٥٠:٥٠</b>، <b>سؤال الجمهور</b>، <b>اتصال بصديق</b>.</li>
+        <li>الأسئلة كلها <b>قسمة صحيحة بدون كسور</b>، والمقسوم عليه من <b>١</b> إلى <b>١٠</b>، والناتج <b>رقم واحد</b>.</li>
+        <li>يمكنك الانسحاب في أي وقت.</li>
+      </ul>
+      <div class="dlg-actions">
+        <button class="btn primary">حسنًا</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlgAudience" class="dlg">
+    <form method="dialog">
+      <h3>نتيجة سؤال الجمهور</h3>
+      <div class="audience">
+        <div class="bar"><span class="lab">أ</span><div class="meter"><div id="audA"></div></div><span id="audATxt" class="pct">٠٪</span></div>
+        <div class="bar"><span class="lab">ب</span><div class="meter"><div id="audB"></div></div><span id="audBTxt" class="pct">٠٪</span></div>
+        <div class="bar"><span class="lab">ج</span><div class="meter"><div id="audC"></div></div><span id="audCTxt" class="pct">٠٪</span></div>
+        <div class="bar"><span class="lab">د</span><div class="meter"><div id="audD"></div></div><span id="audDTxt" class="pct">٠٪</span></div>
+      </div>
+      <div class="dlg-actions">
+        <button class="btn primary">إغلاق</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlgPhone" class="dlg">
+    <form method="dialog">
+      <h3>اتصال بصديق</h3>
+      <p id="phoneMsg" class="phoneMsg">—</p>
+      <div class="dlg-actions">
+        <button class="btn primary">إغلاق</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="footer">
+    <div class="rights">جميع الحقوق محفوظة لـ <b>سلمان الجنيدي</b></div>
+    <div class="social">
+      <a class="icon wa" href="https://wa.me/966566996166" target="_blank" rel="noopener" aria-label="واتساب">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.4-4.7A8.5 8.5 0 1 1 20.5 11.8Z"/>
+          <path d="M7.6 8.4c.2-.5.4-.5.6-.5h.5c.1 0 .3 0 .4.2.1.2.8 1.9.9 2 .1.2.1.3 0 .5l-.3.4c-.1.1-.2.3-.1.5.1.2.5.9 1.1 1.5.8.8 1.5 1.1 1.7 1.2.2.1.4 0 .5-.1l.6-.7c.1-.1.3-.2.5-.1.2.1 1.6.8 1.9.9.2.1.4.2.4.4 0 .2 0 1-.3 1.4-.3.4-1.1.8-1.7.8-.6 0-1.3-.1-2.2-.5-1.6-.7-2.9-1.9-3.9-3.3-.9-1.3-1.2-2.3-1.2-3 0-.8.3-1.3.5-1.7Z" fill="currentColor" opacity=".9"/>
+        </svg>
+        <span>واتساب</span>
+      </a>
+      <a class="icon snap" href="https://snapchat.com/t/CgnT2otP" target="_blank" rel="noopener" aria-label="سناب شات">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2c2.6 0 4.2 2 4.2 4.5 0 .8-.1 1.5-.1 2.2 0 .9.4 1.3 1.1 1.6.8.3 1.5.7 1.5 1.4 0 .6-.6 1-1.2 1.1-.6.2-1 .4-1.2.7-.2.4.3 1.2.7 1.7.4.5.8.9.8 1.3 0 .6-.7 1-1.4 1.1-.9.1-1.6.5-2 1.2-.4.7-.7 1.8-2.4 1.8s-2-1.1-2.4-1.8c-.4-.7-1.1-1.1-2-1.2-.8-.1-1.4-.5-1.4-1.1 0-.4.4-.8.8-1.3.4-.5.9-1.3.7-1.7-.2-.3-.6-.5-1.2-.7-.6-.1-1.2-.5-1.2-1.1 0-.7.7-1.1 1.5-1.4.7-.3 1.1-.7 1.1-1.6 0-.7-.1-1.4-.1-2.2C7.8 4 9.4 2 12 2Z"/>
+        </svg>
+        <span>سناب</span>
+      </a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
