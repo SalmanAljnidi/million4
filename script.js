@@ -255,7 +255,7 @@
     for (let n = Q_TOTAL; n >= 1; n--) {
       const li = document.createElement("li");
       li.className = "litem";
-      li.innerHTML = `<span>${toArabicDigits(n)}</span><span>${n===1 ? "النهائي" : ""}</span>`;
+      li.innerHTML = `<span>${toArabicDigits(n)}</span><span>${n===1 ? "" : ""}</span>`;
       miniLadder.appendChild(li);
     }
   };
